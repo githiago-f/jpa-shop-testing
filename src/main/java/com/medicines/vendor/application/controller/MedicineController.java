@@ -1,13 +1,12 @@
 package com.medicines.vendor.application.controller;
 
-import com.medicines.vendor.domain.order.Medicine;
-import com.medicines.vendor.domain.order.dto.MedicineDTO;
-import com.medicines.vendor.domain.order.repository.MedicinesRepository;
+import com.medicines.vendor.domain.medicine.Medicine;
+import com.medicines.vendor.domain.medicine.dto.MedicineDTO;
+import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
 import com.medicines.vendor.domain.resource_models.MedicineRepresentationModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +35,9 @@ public class MedicineController {
 		);
 	}
 
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getMedicineById(@PathVariable("id") Long id) {
-		return medicinesRepository.findById(id)
+	@GetMapping("/{code}")
+	public ResponseEntity<?> getMedicineByCode(@PathVariable("id") String code) {
+		return medicinesRepository.findByCode(code)
 			.map(assembler::toModel)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
@@ -47,7 +46,7 @@ public class MedicineController {
 	@PostMapping("")
 	public ResponseEntity<?> createOne(@RequestBody() MedicineDTO medicineDTO) {
 		Medicine medicine = medicinesRepository.save(medicineDTO.toEntity());
-		URI uri = URI.create("/" + medicine.getId());
+		URI uri = URI.create("/" + medicine.getCode());
 		return ResponseEntity.created(uri).build();
 	}
 }

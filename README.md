@@ -5,6 +5,10 @@
 This application aims to train and study ways of developing using&nbsp; 
 [Spring](http://spring.io) to create a drug delivery application.
 
+### Additional documentation
+
+ - [Base datasheet](https://neoquimica.com.br/arq/fichas/15471-0%20Ibufran%20400%20mg.pdf)
+
 ### Packages
  - [Spring JPA](https://spring.io/projects/spring-data-jpa)
  - [Spring HATEOAS](https://spring.io/projects/spring-hateoas)

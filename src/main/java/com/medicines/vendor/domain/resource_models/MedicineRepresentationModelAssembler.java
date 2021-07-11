@@ -3,7 +3,7 @@ package com.medicines.vendor.domain.resource_models;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import com.medicines.vendor.application.controller.MedicineController;
-import com.medicines.vendor.domain.order.Medicine;
+import com.medicines.vendor.domain.medicine.Medicine;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -19,8 +19,8 @@ public class MedicineRepresentationModelAssembler implements SimpleRepresentatio
 
 	@Override
 	public EntityModel<Medicine> toModel(Medicine entity) {
-		Long identifier = entity.getId();
-		Link link = linkTo(ref.getMedicineById(identifier)).withSelfRel();
+		String identifier = entity.getCode();
+		Link link = linkTo(ref.getMedicineByCode(identifier)).withSelfRel();
 		return EntityModel.of(entity, link);
 	}
 
@@ -28,8 +28,8 @@ public class MedicineRepresentationModelAssembler implements SimpleRepresentatio
 	public void addLinks(EntityModel<Medicine> resource) {
 			Medicine medicine = resource.getContent();
 			assert medicine != null;
-			Long identifier = medicine.getId();
-			Link link = linkTo(ref.getMedicineById(identifier)).withSelfRel();
+			String identifier = medicine.getCode();
+			Link link = linkTo(ref.getMedicineByCode(identifier)).withSelfRel();
 			resource.add(link);
 	}
 

@@ -1,6 +1,6 @@
-package com.medicines.vendor.domain.order.dto;
+package com.medicines.vendor.domain.medicine.dto;
 
-import com.medicines.vendor.domain.order.Medicine;
+import com.medicines.vendor.domain.medicine.Medicine;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
@@ -12,18 +12,17 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class MedicineDTO {
 	@NotEmpty
+	private final String code;
+	@NotEmpty
 	private final String name;
 	@DecimalMin(value = "0.01")
 	@NotEmpty
 	private final BigDecimal price;
-	@NotEmpty
-	private final String slug;
 
 	public Medicine toEntity() {
 		return Medicine.builder()
 			.name(name)
 			.price(price)
-			.slug(slug)
 			.build();
 	}
 }

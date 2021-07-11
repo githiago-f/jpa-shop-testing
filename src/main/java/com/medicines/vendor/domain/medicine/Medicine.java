@@ -1,5 +1,6 @@
-package com.medicines.vendor.domain.order;
+package com.medicines.vendor.domain.medicine;
 
+import com.medicines.vendor.domain.order.vo.MedicineState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,9 +15,11 @@ import java.math.BigDecimal;
 @Table(name = "medicines")
 public class Medicine {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private String code;
+	@Column(name = "commercial_name")
 	private String name;
+	@Column(name = "factory_price")
 	private BigDecimal price;
-	private String slug;
+	@Enumerated(EnumType.STRING)
+	private MedicineState state;
 }

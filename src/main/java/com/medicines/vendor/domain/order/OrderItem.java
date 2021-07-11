@@ -1,13 +1,14 @@
 package com.medicines.vendor.domain.order;
 
-import lombok.Builder;
-import lombok.Getter;
+import com.medicines.vendor.domain.medicine.Medicine;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Getter @Builder @NoArgsConstructor
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
@@ -17,9 +18,9 @@ public class OrderItem {
 	private Integer quantity;
 	private BigDecimal unitPrice;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Order order;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Medicine medicine;
 
 	public OrderItem(Integer quantity, Order order, Medicine medicine) {

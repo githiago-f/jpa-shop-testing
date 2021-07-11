@@ -13,17 +13,17 @@ import java.util.List;
 @Entity
 @Table(name = "orders")
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private Long id;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> items;
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	private List<OrderItem> items;
 
-    @Enumerated(EnumType.STRING)
-    private OrderState state;
+	@Enumerated(EnumType.STRING)
+	private OrderState state;
 
-    public void addItem(OrderItem item) {
+	public void addItem(OrderItem item) {
         this.items.add(item);
     }
 }
