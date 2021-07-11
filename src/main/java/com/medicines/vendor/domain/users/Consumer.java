@@ -1,5 +1,6 @@
 package com.medicines.vendor.domain.users;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.medicines.vendor.domain.users.vo.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ public class Consumer {
     private String name;
 
     @Column(name = "cpf", unique = true, updatable = false)
+		@JsonFormat(pattern = "***.nnn.nnn-**")
     private String CPF;
 
     @Enumerated(EnumType.STRING)

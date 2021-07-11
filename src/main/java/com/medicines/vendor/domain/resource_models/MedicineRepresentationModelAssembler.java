@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 import com.medicines.vendor.application.controller.MedicineController;
 import com.medicines.vendor.domain.medicine.Medicine;
+import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -37,7 +38,7 @@ public class MedicineRepresentationModelAssembler implements SimpleRepresentatio
 	public CollectionModel<EntityModel<Medicine>> toCollectionModel(Iterable<? extends Medicine> entities) {
 		List<EntityModel<Medicine>> medicines = new ArrayList<>();
 		entities.forEach(i -> medicines.add(toModel(i)));
-		Link link = linkTo(ref.getMedicines(0)).withRel("page");
+		Link link = linkTo(ref.getMedicines(Pageable.ofSize(15))).withRel("page");
 		return CollectionModel.of(medicines, link);
 	}
 

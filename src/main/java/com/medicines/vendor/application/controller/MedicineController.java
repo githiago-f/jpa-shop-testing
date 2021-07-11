@@ -6,10 +6,13 @@ import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
 import com.medicines.vendor.domain.resource_models.MedicineRepresentationModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -27,24 +30,21 @@ public class MedicineController {
 
 	@GetMapping("")
 	public CollectionModel<?> getMedicines(
-		@RequestParam(value = "page", required = false, defaultValue = "1") Integer page) {
-		if(page==0){page=1;}
-		Pageable pageable = Pageable.ofSize(15).withPage(page-1);
-		return assembler.toCollectionModel(
-			medicinesRepository.findAll(pageable).getContent()
-		);
+		@PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable)
+	{
+		return assembler.toCollectionModel(medicinesRepository.findAll(pageable));
 	}
 
 	@GetMapping("/{code}")
-	public ResponseEntity<?> getMedicineByCode(@PathVariable("id") String code) {
-		return medicinesRepository.findByCode(code)
+	public ResponseEntity<?> getMedicineByCode(@PathVariable("code") String code) {
+		return medicinesRepository.findById(code)
 			.map(assembler::toModel)
 			.map(ResponseEntity::ok)
 			.orElse(ResponseEntity.notFound().build());
 	}
 
 	@PostMapping("")
-	public ResponseEntity<?> createOne(@RequestBody() MedicineDTO medicineDTO) {
+	public ResponseEntity<?> createOne(@RequestBody() @Valid MedicineDTO medicineDTO) {
 		Medicine medicine = medicinesRepository.save(medicineDTO.toEntity());
 		URI uri = URI.create("/" + medicine.getCode());
 		return ResponseEntity.created(uri).build();
