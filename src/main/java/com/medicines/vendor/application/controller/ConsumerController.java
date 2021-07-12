@@ -1,27 +1,32 @@
 package com.medicines.vendor.application.controller;
 
+import com.medicines.vendor.domain.resource_models.ConsumerRepresentationModelAssembler;
 import com.medicines.vendor.domain.users.Consumer;
 import com.medicines.vendor.domain.users.dto.ConsumerDTO;
 import com.medicines.vendor.domain.users.repository.ConsumerRepository;
+import com.medicines.vendor.shared.errors.HandleUniqueFieldViolation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
-import java.net.URI;
-
 
 @RestController
 @RequestMapping("api/customer")
-@Validated
 public class ConsumerController {
 	private final ConsumerRepository consumerRepository;
+	private final ConsumerRepresentationModelAssembler assembler;
+	private final HandleUniqueFieldViolation uniqueViolationHandler;
 
 	@Autowired
-	public ConsumerController(ConsumerRepository consumerRepository) {
+	public ConsumerController(ConsumerRepository consumerRepository,
+														ConsumerRepresentationModelAssembler assembler,
+														HandleUniqueFieldViolation uniqueViolationHandler) {
 		this.consumerRepository = consumerRepository;
+		this.assembler = assembler;
+		this.uniqueViolationHandler = uniqueViolationHandler;
 	}
 
 	@GetMapping
@@ -30,14 +35,15 @@ public class ConsumerController {
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<?> findOne(@PathParam("id") Long id) {
+	public ResponseEntity<?> findOne(@PathVariable("id") Long id) {
 		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping
-	public ResponseEntity<?> createOne(@Valid @RequestBody ConsumerDTO consumerDTO) {
-		Consumer savedObject = consumerRepository.save(consumerDTO.toModel());
-		URI uri = URI.create("/api/customer/" + savedObject.getId());
-		return ResponseEntity.created(uri).build();
+	public ResponseEntity<?> createOne(@Valid @RequestBody ConsumerDTO consumerDTO,
+																		 Errors errors) {
+		Consumer aConsumer = consumerRepository.save(consumerDTO.toModel());
+		return ResponseEntity.status(HttpStatus.CREATED)
+			.body(assembler.toModel(aConsumer));
 	}
 }

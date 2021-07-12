@@ -11,9 +11,10 @@ import java.lang.annotation.Target;
 @Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Unique {
-	String message() default "";
+	String message() default "This entry already exists";
 	Class<?>[] groups() default {};
 	Class<? extends Payload>[] payload() default {};
 
 	Class<?> entity();
+	String field();
 }

@@ -2,8 +2,10 @@ package com.medicines.vendor.domain.medicine.dto;
 
 import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.order.vo.MedicineState;
+import com.medicines.vendor.shared.validators.Unique;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.format.annotation.NumberFormat;
 
 import javax.validation.constraints.DecimalMin;
@@ -11,10 +13,12 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
+@Getter
 @Builder
 @AllArgsConstructor
 public class MedicineDTO {
 	@NotEmpty
+	@Unique(entity = Medicine.class, field = "code")
 	private final String code;
 	@NotEmpty
 	private final String name;

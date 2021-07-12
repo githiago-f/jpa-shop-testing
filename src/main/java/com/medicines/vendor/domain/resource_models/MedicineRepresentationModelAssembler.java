@@ -38,7 +38,8 @@ public class MedicineRepresentationModelAssembler implements SimpleRepresentatio
 	public CollectionModel<EntityModel<Medicine>> toCollectionModel(Iterable<? extends Medicine> entities) {
 		List<EntityModel<Medicine>> medicines = new ArrayList<>();
 		entities.forEach(i -> medicines.add(toModel(i)));
-		Link link = linkTo(ref.getMedicines(Pageable.ofSize(15))).withRel("page");
+		Pageable pageable = Pageable.ofSize(15).withPage(1);
+		Link link = linkTo(ref.getMedicines(pageable)).withRel("page");
 		return CollectionModel.of(medicines, link);
 	}
 
