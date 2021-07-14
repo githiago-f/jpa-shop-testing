@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.br.CNPJ;
 
 import javax.persistence.*;
 
@@ -18,10 +19,11 @@ public class Provider {
     private Long id;
     private String name;
 
+    @CNPJ
     @Column(name = "cnpj", unique = true, updatable = false)
     private String CNPJ;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type")
-    private final UserType type = UserType.PROVIDER;
+    private UserType type;
 }
