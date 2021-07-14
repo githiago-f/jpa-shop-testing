@@ -1,7 +1,7 @@
 package com.medicines.vendor.domain.medicine.dto;
 
 import com.medicines.vendor.domain.medicine.Medicine;
-import com.medicines.vendor.domain.order.vo.MedicineState;
+import com.medicines.vendor.domain.medicine.vo.MedicineState;
 import com.medicines.vendor.shared.validators.Unique;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,17 +20,19 @@ public class MedicineDTO {
 	@NotEmpty
 	@Unique(entity = Medicine.class, field = "code")
 	private final String code;
+
 	@NotEmpty
 	private final String name;
+
 	@DecimalMin(value = "0.01")
 	@NotNull
 	@NumberFormat(style = NumberFormat.Style.CURRENCY)
 	private final BigDecimal price;
 
-	public Medicine toEntity() {
+	public Medicine toCreateEntity() {
 		return Medicine.builder()
 			.code(code)
-			.state(MedicineState.DATASHEET)
+			.state(MedicineState.DATASHEET_REQUIRED)
 			.name(name)
 			.price(price)
 			.build();

@@ -11,5 +11,4 @@ import java.util.Optional;
 @Repository
 public interface MedicinesRepository extends JpaRepository<Medicine, String> {
 	Page<Medicine> findAll(Pageable pageable);
-	Optional<Medicine> findByCode(String code);
 }

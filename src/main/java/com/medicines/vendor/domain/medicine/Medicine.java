@@ -1,7 +1,7 @@
 package com.medicines.vendor.domain.medicine;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.medicines.vendor.domain.order.vo.MedicineState;
+import com.medicines.vendor.domain.medicine.vo.MedicineState;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Builder @NoArgsConstructor @AllArgsConstructor
@@ -28,11 +27,10 @@ public class Medicine {
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, locale = "pt_BR")
 	@Column(name = "created_at")
-	@Temporal(TemporalType.TIMESTAMP)
-	private Calendar createdAt;
+	private LocalDate createdAt;
 
 	@PrePersist()
 	void prePersist() {
-		createdAt = Calendar.getInstance();
+		createdAt = LocalDate.now();
 	}
 }

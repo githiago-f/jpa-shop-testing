@@ -18,15 +18,12 @@ import javax.validation.Valid;
 public class ConsumerController {
 	private final ConsumerRepository consumerRepository;
 	private final ConsumerRepresentationModelAssembler assembler;
-	private final HandleUniqueFieldViolation uniqueViolationHandler;
 
 	@Autowired
 	public ConsumerController(ConsumerRepository consumerRepository,
-														ConsumerRepresentationModelAssembler assembler,
-														HandleUniqueFieldViolation uniqueViolationHandler) {
+														ConsumerRepresentationModelAssembler assembler) {
 		this.consumerRepository = consumerRepository;
 		this.assembler = assembler;
-		this.uniqueViolationHandler = uniqueViolationHandler;
 	}
 
 	@GetMapping
@@ -40,8 +37,7 @@ public class ConsumerController {
 	}
 
 	@PostMapping
-	public ResponseEntity<?> createOne(@Valid @RequestBody ConsumerDTO consumerDTO,
-																		 Errors errors) {
+	public ResponseEntity<?> createOne(@Valid @RequestBody ConsumerDTO consumerDTO) {
 		Consumer aConsumer = consumerRepository.save(consumerDTO.toModel());
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(assembler.toModel(aConsumer));
