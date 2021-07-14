@@ -1,5 +1,6 @@
 package com.medicines.vendor.shared.validators;
 
+import com.medicines.vendor.shared.errors.ResourceAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ public class UniqueConstraintValidator implements ConstraintValidator<Unique, Ob
 	private final EntityManager entityManager;
 	private Class<?> entity;
 	private String field;
+	private String entityName;
 
 	@Autowired
 	public UniqueConstraintValidator(EntityManager entityManager) {
@@ -21,14 +23,21 @@ public class UniqueConstraintValidator implements ConstraintValidator<Unique, Ob
 	public void initialize(Unique constraintAnnotation) {
 		entity = constraintAnnotation.entity();
 		field = constraintAnnotation.field();
+		String[] fullyQualifiedNameSplit = entity.getName().split("\\.");
+		entityName = fullyQualifiedNameSplit[fullyQualifiedNameSplit.length-1];
 	}
 
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
 		String jpql = "SELECT e.code FROM " + entity.getName() + " e WHERE e." + field + " = :value";
 		List<?> resultList = entityManager.createQuery(jpql)
-			.setParameter("value", value.toString())
+			.setParameter("value", value)
 			.getResultList();
-		return resultList.size() < 1;
+		if(resultList.size() >= 1) {
+			throw new ResourceAlreadyExistsException(
+				entityName + " with " + field + " = " + value + " already exists"
+			);
+		}
+		return true;
 	}
 }
