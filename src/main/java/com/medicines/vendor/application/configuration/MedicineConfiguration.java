@@ -1,4 +1,4 @@
-package com.medicines.vendor.domain.medicine.config;
+package com.medicines.vendor.application.configuration;
 
 import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
@@ -22,7 +22,7 @@ public class MedicineConfiguration {
 	}
 
 	@Bean
-	CommandLineRunner commandLineRunner(MedicinesRepository medicinesRepository) {
+	CommandLineRunner medicineCLR(MedicinesRepository medicinesRepository) {
 		return args -> {
 			Medicine medicine = medicineFactory("11571-0", "Medicine 1", "41.0");
 			Medicine medicine1 = medicineFactory("11571-1", "Medicine 2", "57.0");
