@@ -16,7 +16,8 @@ public class ConsumerDTO {
 	@CPF
 	@Unique(entity = Consumer.class, field = "cpf")
 	private String cpf;
-	public Consumer toModel() {
+
+	public Consumer toEntity() {
 		return Consumer.builder()
 			.CPF(cpf)
 			.name(name)
