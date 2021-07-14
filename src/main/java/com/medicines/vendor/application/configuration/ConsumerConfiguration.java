@@ -12,8 +12,8 @@ public class ConsumerConfiguration {
 	CommandLineRunner consumerCLR(ConsumerRepository repository) {
 		return args -> {
 			var consumer = Consumer.builder()
-				.name("Thiago Dutra")
-				.CPF("000.000.000-00")
+				.name("Usuário teste")
+				.CPF("081.532.790-09")
 				.build();
 			repository.save(consumer);
 		};
