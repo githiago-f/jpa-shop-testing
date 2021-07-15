@@ -33,4 +33,8 @@ public class Medicine {
 	void prePersist() {
 		createdAt = LocalDate.now();
 	}
+
+	public void setState(MedicineState state) {
+		this.state = state;
+	}
 }

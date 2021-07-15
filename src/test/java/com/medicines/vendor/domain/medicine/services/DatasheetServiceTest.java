@@ -2,6 +2,7 @@ package com.medicines.vendor.domain.medicine.services;
 
 import com.medicines.vendor.domain.medicine.Datasheet;
 import com.medicines.vendor.domain.medicine.Medicine;
+import com.medicines.vendor.domain.medicine.dto.DatasheetDTO;
 import com.medicines.vendor.domain.medicine.errors.CannotCreateDatasheet;
 import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
 import com.medicines.vendor.domain.medicine.vo.MedicineState;
@@ -20,52 +21,71 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("# DatasheetService")
 @SpringBootTest
 class DatasheetServiceTest {
-	@Autowired
 	protected MedicinesRepository repository;
-	@Autowired
-	protected DatasheetService datasheetService;
+	protected DatasheetService datasheetService = new DatasheetService(repository);
+
+	protected String medicineCode = "code-1";
 
 	protected Medicine medicineWithState(MedicineState state) {
 		return Medicine.builder()
-			.code("code-1")
+			.code(medicineCode)
 			.name("medicine")
 			.price(new BigDecimal("14.00"))
 			.state(state)
+			.build();
+	}
+	protected DatasheetDTO candyDatasheet() {
+		return DatasheetDTO.builder()
+			.medicineCode(medicineCode)
+			.activeIngredient("sugar")
+			.indication("any")
 			.build();
 	}
 
 	@Nested
 	@DisplayName("Medicine is waiting datasheet")
 	public class MedicineWaitingDatasheet {
-		private Medicine medicine;
+		DatasheetDTO dto;
+
 		@BeforeEach
 		void setUp() {
-			medicine = medicineWithState(MedicineState.DATASHEET_REQUIRED);
+			Medicine medicine = medicineWithState(MedicineState.DATASHEET_REQUIRED);
 			repository.save(medicine);
+			dto = candyDatasheet();
 		}
 
 		@Test
-		@DisplayName("it can generate a datasheet")
+		@DisplayName("- it's result is a valid datasheet")
 		void itCanGenerateADatasheet() {
-			Datasheet datasheet = datasheetService.createDatasheetForMedicine(medicine);
-			assertEquals(datasheet.medicine.getCode(), medicine.getCode());
+			Datasheet datasheet = datasheetService.createDatasheetForMedicine(dto);
+			assertEquals(medicineCode, datasheet.getMedicine().getCode());
+			assertEquals("sugar", datasheet.getActiveIngredient());
+		}
+
+		@Test
+		@DisplayName("- medicine state should be activated")
+		void medicineStateShouldBeActive() {
+			Datasheet datasheet = datasheetService.createDatasheetForMedicine(dto);
+			assertEquals(MedicineState.ACTIVE, datasheet.getMedicine().getState());
 		}
 	}
 
 	@Nested
 	@DisplayName("Medicine is not waiting datasheet")
 	public class MedicineNotWaitingDatasheet {
-		private Medicine medicine;
+		DatasheetDTO dto;
+
 		@BeforeEach
 		void setUp() {
-			medicine = medicineWithState(MedicineState.ACTIVE);
+			Medicine medicine = medicineWithState(MedicineState.ACTIVE);
 			repository.save(medicine);
+			dto = candyDatasheet();
 		}
 
 		@Test
 		@DisplayName("- it throws illegal operation")
 		void itThrowsIllegalOperation() {
-			Executable canHaveError = () -> datasheetService.createDatasheetForMedicine(medicine);
+			Executable canHaveError = () -> datasheetService.createDatasheetForMedicine(dto);
 			assertThrows(CannotCreateDatasheet.class, canHaveError);
 		}
 	}
