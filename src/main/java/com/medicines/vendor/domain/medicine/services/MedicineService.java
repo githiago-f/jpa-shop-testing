@@ -2,8 +2,10 @@ package com.medicines.vendor.domain.medicine.services;
 
 import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
+import com.medicines.vendor.domain.medicine.vo.MedicineState;
 import com.medicines.vendor.domain.resource_models.MedicineModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -26,8 +28,14 @@ public class MedicineService {
 		return assembler.toModel(repository.save(medicine));
 	}
 
-	public CollectionModel<EntityModel<Medicine>> pageableListOfMedicines(Pageable pageable) {
-		return assembler.toCollectionModel(repository.findAll(pageable));
+	public CollectionModel<EntityModel<Medicine>> getOnlyActiveMedicines(Pageable pageable) {
+		Medicine medicineOnlyDatasheet = Medicine.builder()
+			.state(MedicineState.ACTIVE)
+			.build();
+		Example<Medicine> example = Example.of(medicineOnlyDatasheet);
+		return assembler.toCollectionModel(
+			repository.findAll(example, pageable)
+		);
 	}
 
 	public Optional<?> getMedicineByCode(String code) {

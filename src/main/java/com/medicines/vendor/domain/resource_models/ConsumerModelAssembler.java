@@ -18,7 +18,7 @@ public class ConsumerModelAssembler implements SimpleRepresentationModelAssemble
 
 	@Override
 	public EntityModel<Consumer> toModel(Consumer entity) {
-		return SimpleRepresentationModelAssembler.super.toModel(entity);
+		return EntityModel.of(entity);
 	}
 
 	@Override

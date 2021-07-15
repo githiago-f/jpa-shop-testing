@@ -28,7 +28,7 @@ public class MedicineController {
 	@GetMapping
 	public CollectionModel<?> getMedicines(
 		@PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-		return medicineService.pageableListOfMedicines(pageable);
+		return medicineService.getOnlyActiveMedicines(pageable);
 	}
 
 	@GetMapping("/{code}")
