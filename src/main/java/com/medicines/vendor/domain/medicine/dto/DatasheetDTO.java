@@ -19,7 +19,7 @@ public class DatasheetDTO {
 	@NotEmpty
 	@JsonProperty("active_ingredient")
 	private String activeIngredient;
-	@NotEmpty
+
 	@JsonProperty("medicine_code")
 	private String medicineCode;
 

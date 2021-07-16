@@ -4,36 +4,27 @@ import com.medicines.vendor.domain.medicine.Datasheet;
 import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.medicine.dto.DatasheetDTO;
 import com.medicines.vendor.domain.medicine.errors.CannotCreateDatasheet;
+import com.medicines.vendor.domain.medicine.repository.DatasheetRepository;
 import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
 import com.medicines.vendor.domain.medicine.vo.MedicineState;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.math.BigDecimal;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 
-@DisplayName("# DatasheetService")
 @SpringBootTest
+@DisplayName("# DatasheetService")
 class DatasheetServiceTest {
-	protected MedicinesRepository repository;
-	protected DatasheetService datasheetService = new DatasheetService(repository);
-
+	@Mock protected MedicinesRepository medicinesRepository;
+	@Mock protected DatasheetRepository datasheetRepository;
+	@InjectMocks protected DatasheetService datasheetService;
 	protected String medicineCode = "code-1";
 
-	protected Medicine medicineWithState(MedicineState state) {
-		return Medicine.builder()
-			.code(medicineCode)
-			.name("medicine")
-			.price(new BigDecimal("14.00"))
-			.state(state)
-			.build();
-	}
 	protected DatasheetDTO candyDatasheet() {
 		return DatasheetDTO.builder()
 			.medicineCode(medicineCode)
@@ -46,17 +37,24 @@ class DatasheetServiceTest {
 	@DisplayName("Medicine is waiting datasheet")
 	public class MedicineWaitingDatasheet {
 		DatasheetDTO dto;
+		Medicine medicine;
 
 		@BeforeEach
-		void setUp() {
-			Medicine medicine = medicineWithState(MedicineState.DATASHEET_REQUIRED);
-			repository.save(medicine);
+		public void setUp() {
+			medicine = Medicine.builder()
+				.code(medicineCode)
+				.state(MedicineState.DATASHEET_REQUIRED)
+				.build();
 			dto = candyDatasheet();
+			Mockito.when(medicinesRepository.findByCode(medicineCode))
+				.thenReturn(Optional.ofNullable(medicine));
+			Mockito.when(datasheetRepository.save(any(Datasheet.class)))
+				.thenReturn(dto.toEntity().medicine(medicine).build());
 		}
 
 		@Test
 		@DisplayName("- it's result is a valid datasheet")
-		void itCanGenerateADatasheet() {
+		public void itCanGenerateADatasheet() {
 			Datasheet datasheet = datasheetService.createDatasheetForMedicine(dto);
 			assertEquals(medicineCode, datasheet.getMedicine().getCode());
 			assertEquals("sugar", datasheet.getActiveIngredient());
@@ -64,7 +62,7 @@ class DatasheetServiceTest {
 
 		@Test
 		@DisplayName("- medicine state should be activated")
-		void medicineStateShouldBeActive() {
+		public void medicineStateShouldBeActive() {
 			Datasheet datasheet = datasheetService.createDatasheetForMedicine(dto);
 			assertEquals(MedicineState.ACTIVE, datasheet.getMedicine().getState());
 		}
@@ -74,17 +72,22 @@ class DatasheetServiceTest {
 	@DisplayName("Medicine is not waiting datasheet")
 	public class MedicineNotWaitingDatasheet {
 		DatasheetDTO dto;
+		private Medicine medicine;
 
 		@BeforeEach
 		void setUp() {
-			Medicine medicine = medicineWithState(MedicineState.ACTIVE);
-			repository.save(medicine);
 			dto = candyDatasheet();
+			medicine = Medicine.builder()
+				.code(medicineCode)
+				.state(MedicineState.ACTIVE)
+				.build();
 		}
 
 		@Test
-		@DisplayName("- it throws illegal operation")
+		@DisplayName("- it is a unprocessable entity status")
 		void itThrowsIllegalOperation() {
+			Mockito.when(medicinesRepository.findByCode(medicineCode))
+				.thenReturn(Optional.ofNullable(medicine));
 			Executable canHaveError = () -> datasheetService.createDatasheetForMedicine(dto);
 			assertThrows(CannotCreateDatasheet.class, canHaveError);
 		}

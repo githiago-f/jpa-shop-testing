@@ -28,7 +28,7 @@ public class MedicineService {
 		return assembler.toModel(repository.save(medicine));
 	}
 
-	public CollectionModel<EntityModel<Medicine>> getOnlyActiveMedicines(Pageable pageable) {
+	public CollectionModel<EntityModel<Medicine>> getOnlyActiveMedicineResources(Pageable pageable) {
 		Medicine medicineOnlyDatasheet = Medicine.builder()
 			.state(MedicineState.ACTIVE)
 			.build();
@@ -38,7 +38,7 @@ public class MedicineService {
 		);
 	}
 
-	public Optional<?> getMedicineByCode(String code) {
-		return repository.findById(code).map(assembler::toModel);
+	public Optional<?> getMedicineResourceByCode(String code) {
+		return repository.findByCode(code).map(assembler::toModel);
 	}
 }
