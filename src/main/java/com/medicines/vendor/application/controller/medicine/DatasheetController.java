@@ -1,4 +1,4 @@
-package com.medicines.vendor.application.controller;
+package com.medicines.vendor.application.controller.medicine;
 
 import com.medicines.vendor.domain.medicine.Datasheet;
 import com.medicines.vendor.domain.medicine.dto.DatasheetDTO;
