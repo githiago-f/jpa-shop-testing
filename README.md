@@ -1,4 +1,5 @@
 # Medicines 💊💉 - Delivery
+![CI Flow](https://github.com/githiago-f/spring-shop/workflows/CI%20tests/badge.svg)
 
 ## About
 
