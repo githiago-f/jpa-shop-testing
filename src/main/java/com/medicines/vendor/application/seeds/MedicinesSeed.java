@@ -1,4 +1,4 @@
-package com.medicines.vendor.application.configuration;
+package com.medicines.vendor.application.seeds;
 
 import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Configuration
-public class MedicineConfiguration {
+public class MedicinesSeed {
 	private Medicine medicineFactory(String code, String name, String price) {
 		return Medicine.builder()
 			.code(code)

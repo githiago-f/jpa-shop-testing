@@ -1,4 +1,4 @@
-package com.medicines.vendor.application.configuration;
+package com.medicines.vendor.application.seeds;
 
 import com.medicines.vendor.domain.users.Consumer;
 import com.medicines.vendor.domain.users.repository.ConsumerRepository;
@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ConsumerConfiguration {
+public class ConsumerSeed {
 	@Bean
 	CommandLineRunner consumerCLR(ConsumerRepository repository) {
 		return args -> {

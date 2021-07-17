@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseBody
-@ResponseStatus(value = HttpStatus.CONFLICT)
-public class ResourceAlreadyExistsException extends RuntimeException {
-	public ResourceAlreadyExistsException(String message) {
-		super(message);
-	}
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class NotFoundException extends IllegalStateException {
+	public NotFoundException(String message) { super(message); }
 }

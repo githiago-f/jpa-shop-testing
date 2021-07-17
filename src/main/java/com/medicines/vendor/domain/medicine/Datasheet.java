@@ -1,21 +1,22 @@
 package com.medicines.vendor.domain.medicine;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Data @NoArgsConstructor
-@Entity
-@Table(name = "datasheets")
+@Builder @AllArgsConstructor
+@Entity @Table(name = "datasheets")
 public class Datasheet {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	public Medicine medicine;
+	@JsonBackReference
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private Medicine medicine;
+	private String indication;
 
-	public Datasheet(Medicine medicine){
-		this.medicine = medicine;
-	}
+	@Column(name = "active_ingredient")
+	private String activeIngredient;
 }
