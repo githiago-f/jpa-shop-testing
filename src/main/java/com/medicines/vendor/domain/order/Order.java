@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter @Builder @NoArgsConstructor @AllArgsConstructor
@@ -22,8 +23,18 @@ public class Order {
 
 	@Enumerated(EnumType.STRING)
 	private OrderState state;
+	private String client;
+	@Transient
+	private BigDecimal total;
 
 	public void addItem(OrderItem item) {
-        this.items.add(item);
-    }
+		this.items.add(item);
+	}
+
+	public BigDecimal getTotal() {
+		return items.stream()
+			.parallel()
+			.map(OrderItem::getTotalPrice)
+			.reduce(new BigDecimal(0), BigDecimal::add);
+	}
 }
