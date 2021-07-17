@@ -2,18 +2,23 @@ package com.medicines.vendor.domain.order.dto;
 
 import com.medicines.vendor.domain.order.Order;
 import com.medicines.vendor.domain.order.vo.OrderState;
+import lombok.Data;
 import org.hibernate.validator.constraints.br.CNPJ;
+import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
-import java.util.stream.Collectors;
 
+@Data
 public class OrderDTO {
 	@CNPJ
+	@NotEmpty
 	private String client; // this will come from session
-	private List<OrderItemDTO> items; // this can be null
+	@Nullable
+	private List<OrderItemDTO> items;
 
-	private void toEntity() {
-		Order.builder()
+	private Order toEntity() {
+		return Order.builder()
 			.state(OrderState.TO_CONFIRM)
 			.build();
 	}

@@ -23,6 +23,9 @@ public class OrderItem {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Medicine medicine;
 
+	@Transient
+	private BigDecimal totalPrice;
+
 	public BigDecimal getTotalPrice() {
 		return unitPrice.multiply(new BigDecimal(quantity));
 	}
