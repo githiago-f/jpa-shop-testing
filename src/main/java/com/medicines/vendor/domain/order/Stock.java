@@ -1,11 +1,7 @@
 package com.medicines.vendor.domain.order;
 
 import com.medicines.vendor.domain.medicine.Medicine;
-import com.medicines.vendor.domain.users.Provider;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -19,6 +15,4 @@ public class Stock {
 	@OneToOne
 	private Medicine medicine;
 	private Integer quantity;
-	@ManyToOne(fetch = FetchType.LAZY)
-	private Provider provider;
 }

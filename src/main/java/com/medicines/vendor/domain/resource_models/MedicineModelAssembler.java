@@ -1,6 +1,6 @@
 package com.medicines.vendor.domain.resource_models;
 
-import com.medicines.vendor.application.controller.MedicineController;
+import com.medicines.vendor.application.controller.medicine.MedicineController;
 import com.medicines.vendor.domain.medicine.Medicine;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
