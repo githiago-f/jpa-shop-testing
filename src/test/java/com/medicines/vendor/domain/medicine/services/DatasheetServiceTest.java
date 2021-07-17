@@ -5,14 +5,11 @@ import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.medicine.dto.DatasheetDTO;
 import com.medicines.vendor.domain.medicine.errors.CannotCreateDatasheet;
 import com.medicines.vendor.domain.medicine.repository.DatasheetRepository;
-import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
 import com.medicines.vendor.domain.medicine.vo.MedicineState;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.*;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,7 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 @SpringBootTest
 @DisplayName("# DatasheetService")
 class DatasheetServiceTest {
-	@Mock protected MedicinesRepository medicinesRepository;
+	@Mock protected MedicineService medicineService;
 	@Mock protected DatasheetRepository datasheetRepository;
 	@InjectMocks protected DatasheetService datasheetService;
 	protected String medicineCode = "code-1";
@@ -46,10 +43,10 @@ class DatasheetServiceTest {
 				.state(MedicineState.DATASHEET_REQUIRED)
 				.build();
 			dto = candyDatasheet();
-			Mockito.when(medicinesRepository.findByCode(medicineCode))
-				.thenReturn(Optional.ofNullable(medicine));
 			Mockito.when(datasheetRepository.save(any(Datasheet.class)))
 				.thenReturn(dto.toEntity().medicine(medicine).build());
+			Mockito.when(medicineService.getMedicineByCode(medicineCode))
+				.thenReturn(medicine);
 		}
 
 		@Test
@@ -86,8 +83,8 @@ class DatasheetServiceTest {
 		@Test
 		@DisplayName("- it is a unprocessable entity status")
 		void itThrowsIllegalOperation() {
-			Mockito.when(medicinesRepository.findByCode(medicineCode))
-				.thenReturn(Optional.ofNullable(medicine));
+			Mockito.when(medicineService.getMedicineByCode(medicineCode))
+				.thenReturn(medicine);
 			Executable canHaveError = () -> datasheetService.createDatasheetForMedicine(dto);
 			assertThrows(CannotCreateDatasheet.class, canHaveError);
 		}

@@ -16,21 +16,24 @@ import java.time.LocalDateTime;
 public class Medicine {
 	@Id
 	private String code;
+
 	@Column(name = "commercial_name")
 	private String name;
+
 	@Column(name = "factory_price")
 	private BigDecimal price;
+
 	@Enumerated(EnumType.STRING)
 	private MedicineState state;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, locale = "pt_BR")
 	@Column(name = "created_at")
-	@JsonProperty("created_at")
 	private LocalDateTime createdAt;
 
 	@Nullable
 	@OneToOne(mappedBy = "medicine", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(referencedColumnName = "id")
+	@JsonManagedReference
 	private Datasheet datasheet;
 
 	@PrePersist()
