@@ -1,7 +1,8 @@
-package com.medicines.vendor.domain.resource_models;
+package com.medicines.vendor.domain.medicine.resource_mappers;
 
 import com.medicines.vendor.application.controller.medicine.MedicineController;
 import com.medicines.vendor.domain.medicine.Medicine;
+import com.medicines.vendor.domain.medicine.vo.MedicineListable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -13,29 +14,38 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class MedicineModelAssembler implements SimpleRepresentationModelAssembler<Medicine> {
+public class MedicineListableAssembler implements SimpleRepresentationModelAssembler<MedicineListable> {
 	private final MedicineController rel = methodOn(MedicineController.class);
 
+	public MedicineListable toListable(Medicine medicine) {
+		return MedicineListable.builder()
+			.code(medicine.getCode())
+			.name(medicine.getName())
+			.state(medicine.getState())
+			.createdAt(medicine.getCreatedAt())
+			.build();
+	}
+
 	@Override
-	public EntityModel<Medicine> toModel(Medicine entity) {
+	public EntityModel<MedicineListable> toModel(MedicineListable entity) {
 		return SimpleRepresentationModelAssembler.super.toModel(entity);
 	}
 
 	@Override
-	public void addLinks(EntityModel<Medicine> resource) {
-		Medicine medicine = resource.getContent();
+	public void addLinks(EntityModel<MedicineListable> resource) {
+		MedicineListable medicine = resource.getContent();
 		assert medicine != null;
 		Link link = linkTo(rel.getMedicineByCode(medicine.getCode())).withSelfRel();
 		resource.add(link);
 	}
 
 	@Override
-	public CollectionModel<EntityModel<Medicine>> toCollectionModel(Iterable<? extends Medicine> entities) {
+	public CollectionModel<EntityModel<MedicineListable>> toCollectionModel(Iterable<? extends MedicineListable> entities) {
 		return SimpleRepresentationModelAssembler.super.toCollectionModel(entities);
 	}
 
 	@Override
-	public void addLinks(CollectionModel<EntityModel<Medicine>> resources) {
+	public void addLinks(CollectionModel<EntityModel<MedicineListable>> resources) {
 		Link link = linkTo(
 			rel.getMedicines(Pageable.ofSize(1))
 		).withRel("page");
