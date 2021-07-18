@@ -11,20 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class DatasheetService {
 	private final DatasheetRepository datasheetRepository;
-	private final MedicineService medicineService;
 
 	@Autowired
-	public DatasheetService(
-		DatasheetRepository datasheetRepository,
-		MedicineService medicineService) {
+	public DatasheetService(DatasheetRepository datasheetRepository) {
 		this.datasheetRepository = datasheetRepository;
-		this.medicineService = medicineService;
 	}
 
-	public Datasheet createDatasheetForMedicine(DatasheetDTO datasheetDTO) {
-		String code = datasheetDTO.getMedicineCode();
-		Medicine medicine = medicineService.getMedicineByCode(code);
-
+	public Datasheet createDatasheetForMedicine(DatasheetDTO datasheetDTO, Medicine medicine) {
 		if (!medicine.isWaitingDatasheet()) {
 			throw new CannotCreateDatasheet();
 		}

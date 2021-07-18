@@ -17,7 +17,6 @@ import static org.mockito.ArgumentMatchers.any;
 @SpringBootTest
 @DisplayName("# DatasheetService")
 class DatasheetServiceTest {
-	@Mock protected MedicineService medicineService;
 	@Mock protected DatasheetRepository datasheetRepository;
 	@InjectMocks protected DatasheetService datasheetService;
 	protected String medicineCode = "code-1";
@@ -45,14 +44,12 @@ class DatasheetServiceTest {
 			dto = candyDatasheet();
 			Mockito.when(datasheetRepository.save(any(Datasheet.class)))
 				.thenReturn(dto.toEntity().medicine(medicine).build());
-			Mockito.when(medicineService.getMedicineByCode(medicineCode))
-				.thenReturn(medicine);
 		}
 
 		@Test
 		@DisplayName("- it's result is a valid datasheet")
 		public void itCanGenerateADatasheet() {
-			Datasheet datasheet = datasheetService.createDatasheetForMedicine(dto);
+			Datasheet datasheet = datasheetService.createDatasheetForMedicine(dto, medicine);
 			assertEquals(medicineCode, datasheet.getMedicine().getCode());
 			assertEquals("sugar", datasheet.getActiveIngredient());
 		}
@@ -60,8 +57,9 @@ class DatasheetServiceTest {
 		@Test
 		@DisplayName("- medicine state should be activated")
 		public void medicineStateShouldBeActive() {
-			Datasheet datasheet = datasheetService.createDatasheetForMedicine(dto);
+			Datasheet datasheet = datasheetService.createDatasheetForMedicine(dto, medicine);
 			assertEquals(MedicineState.ACTIVE, datasheet.getMedicine().getState());
+			assertEquals(MedicineState.ACTIVE, medicine.getState());
 		}
 	}
 
@@ -81,12 +79,11 @@ class DatasheetServiceTest {
 		}
 
 		@Test
-		@DisplayName("- it is a unprocessable entity status")
+		@DisplayName("- cannot alter medicine or process the request")
 		void itThrowsIllegalOperation() {
-			Mockito.when(medicineService.getMedicineByCode(medicineCode))
-				.thenReturn(medicine);
-			Executable canHaveError = () -> datasheetService.createDatasheetForMedicine(dto);
+			Executable canHaveError = () -> datasheetService.createDatasheetForMedicine(dto, medicine);
 			assertThrows(CannotCreateDatasheet.class, canHaveError);
+			assertEquals(MedicineState.ACTIVE, medicine.getState());
 		}
 	}
 }
