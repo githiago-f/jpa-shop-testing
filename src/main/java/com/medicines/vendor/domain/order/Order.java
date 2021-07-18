@@ -1,29 +1,28 @@
 package com.medicines.vendor.domain.order;
 
 import com.medicines.vendor.domain.order.vo.OrderState;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@Getter @Builder @NoArgsConstructor @AllArgsConstructor
 @Entity
+@Getter @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "orders")
 public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long id;
 
+	@Enumerated(EnumType.STRING)
+	private OrderState state;
+
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderItem> items;
 
-	@Enumerated(EnumType.STRING)
-	private OrderState state;
-	private String client;
 	@Transient
 	private BigDecimal total;
 

@@ -1,5 +1,6 @@
 package com.medicines.vendor.domain.order.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.medicines.vendor.domain.order.Order;
 import com.medicines.vendor.domain.order.vo.OrderState;
 import lombok.Data;
@@ -13,7 +14,9 @@ import java.util.List;
 public class OrderDTO {
 	@CNPJ
 	@NotEmpty
-	private String client; // this will come from session
+	@JsonProperty(value = "client_cnpj")
+	private String client;
+
 	@Nullable
 	private List<OrderItemDTO> items;
 
