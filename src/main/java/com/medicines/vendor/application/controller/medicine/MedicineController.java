@@ -3,7 +3,7 @@ package com.medicines.vendor.application.controller.medicine;
 import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.medicine.dto.MedicineDTO;
 import com.medicines.vendor.domain.medicine.services.MedicineService;
-import com.medicines.vendor.domain.medicine.vo.MedicineListable;
+import com.medicines.vendor.domain.medicine.dto.MedicineListable;
 import com.medicines.vendor.domain.medicine.resource_mappers.MedicineListableAssembler;
 import com.medicines.vendor.domain.medicine.resource_mappers.MedicineModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +39,8 @@ public class MedicineController {
 	@GetMapping
 	public CollectionModel<?> getMedicines(
 		@PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-		Page<Medicine> medicinePage = medicineService.getAllActiveMedicines(pageable);
-		List<MedicineListable> listableList = new ArrayList<>();
-		medicinePage.forEach(medicine -> listableList.add(listableAssembler.toListable(medicine)));
-		return listableAssembler.toCollectionModel(listableList);
+		Page<MedicineListable> medicinePage = medicineService.getAllActiveMedicines(pageable);
+		return listableAssembler.toCollectionModel(medicinePage);
 	}
 
 	@GetMapping("/{code}")
