@@ -18,12 +18,6 @@ public class OrderController {
 
 	@PostMapping
 	Order getOrders(@RequestBody OrderDTO orderDTO) {
-		Order order = orderService.openOrder(orderDTO);
-//		for (OrderItemDTO orderItemDto : orderDTO.getItems()) {
-//			Medicine medicine = medicinesRepository.findByCode(orderItemDto.getMedicineCode())
-//				.orElseThrow(() -> new NotFoundException("Medicine not found!"));
-//			order = orderService.addItemToOrder(order, medicine, orderItemDto.getQuantity());
-//		}
-		return order;
+		return orderService.openOrder(orderDTO);
 	}
 }

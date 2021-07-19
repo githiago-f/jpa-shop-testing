@@ -1,5 +1,6 @@
 package com.medicines.vendor.domain.order;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.medicines.vendor.domain.medicine.Medicine;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class OrderItem {
 	private BigDecimal unitPrice;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	private Order order;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -28,5 +30,10 @@ public class OrderItem {
 
 	public BigDecimal getTotalPrice() {
 		return unitPrice.multiply(new BigDecimal(quantity));
+	}
+
+	public void setMedicine(Medicine medicine) {
+		this.medicine = medicine;
+		this.unitPrice = medicine.getPrice();
 	}
 }

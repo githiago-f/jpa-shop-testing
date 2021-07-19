@@ -1,6 +1,7 @@
 package com.medicines.vendor.domain.order.service;
 
 import com.medicines.vendor.domain.medicine.Medicine;
+import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
 import com.medicines.vendor.domain.order.Order;
 import com.medicines.vendor.domain.order.OrderItem;
 import com.medicines.vendor.domain.order.dto.OrderDTO;
@@ -9,16 +10,19 @@ import com.medicines.vendor.domain.order.repository.OrderRepository;
 import com.medicines.vendor.domain.order.service.errors.CannotAddItemsException;
 import com.medicines.vendor.domain.order.service.errors.MedicineInactiveException;
 import com.medicines.vendor.domain.order.service.errors.NoItemsInOrderException;
+import com.medicines.vendor.shared.errors.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OrderService {
 	private final OrderRepository orderRepository;
+	private final MedicinesRepository medicinesRepository;
 
 	@Autowired
-	public OrderService(OrderRepository orderRepository) {
+	public OrderService(OrderRepository orderRepository, MedicinesRepository medicinesRepository) {
 		this.orderRepository = orderRepository;
+		this.medicinesRepository = medicinesRepository;
 	}
 
 	public Order openOrder(OrderDTO orderDTO) {
@@ -28,7 +32,9 @@ public class OrderService {
 		Order order = orderRepository.save(orderDTO.toEntity());
 		assert orderDTO.getItems() != null;
 		for(OrderItemDTO item : orderDTO.getItems()) {
-			// TODO: insert order items and return
+			Medicine medicine = medicinesRepository.findByCode(item.getMedicineCode())
+				.orElseThrow(() -> new NotFoundException("Medicine not found!"));
+			order = addItemToOrder(order, medicine, item.getQuantity());
 		}
 		return order;
 	}

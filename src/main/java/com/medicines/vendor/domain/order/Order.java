@@ -1,5 +1,6 @@
 package com.medicines.vendor.domain.order;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.medicines.vendor.domain.order.vo.OrderState;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
@@ -24,6 +25,7 @@ public class Order {
 	private OrderState state;
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private final List<OrderItem> items = new ArrayList<>();
 
 	@Transient
