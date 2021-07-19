@@ -41,10 +41,7 @@ public class Medicine {
 		createdAt = LocalDateTime.now();
 	}
 
-	public boolean isWaitingDatasheet() {
-		return state.equals(MedicineState.DATASHEET_REQUIRED);
-	}
-	public void enable() {
-		state = MedicineState.ACTIVE;
-	}
+	public void enable() { state = MedicineState.ACTIVE; }
+	public boolean isWaitingDatasheet() { return state.equals(MedicineState.DATASHEET_REQUIRED); }
+	public boolean isActive() { return state.equals(MedicineState.ACTIVE); }
 }
