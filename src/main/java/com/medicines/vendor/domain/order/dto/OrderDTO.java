@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CNPJ;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -19,8 +18,6 @@ public class OrderDTO {
 	@NotEmpty
 	@JsonProperty(value = "client_cnpj")
 	private String client;
-
-	@Nullable
 	private List<OrderItemDTO> items;
 
 	public boolean hasItems() {

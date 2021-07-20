@@ -1,6 +1,7 @@
 package com.medicines.vendor.domain.order;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.medicines.vendor.domain.order.service.errors.*;
 import com.medicines.vendor.domain.order.vo.OrderState;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
@@ -24,14 +25,15 @@ public class Order {
 	@Enumerated(EnumType.STRING)
 	private OrderState state;
 
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonManagedReference
 	private final List<OrderItem> items = new ArrayList<>();
-
-	@Transient
 	private BigDecimal total;
 
 	public void addItem(OrderItem item) {
+		if(!canAddItems()) {
+			throw new CannotAddItemsException();
+		}
 		this.items.add(item);
 	}
 
@@ -40,10 +42,23 @@ public class Order {
 		return state.equals(OrderState.TO_CONFIRM);
 	}
 
-	public BigDecimal getTotal() {
-		return items.stream()
+	@PrePersist
+	@PreUpdate
+	public void calculateTotal() {
+		total = items.stream()
 			.parallel()
 			.map(OrderItem::getTotalPrice)
-			.reduce(new BigDecimal(0), BigDecimal::add);
+			.reduce(new BigDecimal("0.00"), BigDecimal::add);
+	}
+
+	public void confirm() {
+		if(!canConfirm()) {
+			throw new CannotConfirmOrderException();
+		}
+		state = OrderState.CONFIRMED;
+	}
+
+	public boolean canConfirm() {
+		return state.equals(OrderState.TO_CONFIRM);
 	}
 }

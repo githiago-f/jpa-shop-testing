@@ -9,9 +9,11 @@ import com.medicines.vendor.domain.order.dto.OrderDTO;
 import com.medicines.vendor.domain.order.dto.OrderItemDTO;
 import com.medicines.vendor.domain.order.repository.OrderRepository;
 import com.medicines.vendor.domain.order.service.errors.CannotAddItemsException;
+import com.medicines.vendor.domain.order.service.errors.CannotConfirmOrderException;
 import com.medicines.vendor.domain.order.service.errors.MedicineInactiveException;
 import com.medicines.vendor.domain.order.service.errors.NoItemsInOrderException;
 import com.medicines.vendor.domain.order.vo.OrderState;
+import com.medicines.vendor.shared.errors.NotFoundException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
@@ -60,9 +62,13 @@ class OrderServiceTest {
 
 			item = OrderItem.builder()
 				.order(builtOrder)
-				.medicine(medicineActive)
 				.quantity(1)
+				.medicine(medicineActive)
+				.unitPrice(medicineActive.getPrice())
 				.build();
+
+			builtOrder.addItem(item);
+			builtOrder.calculateTotal();
 
 			when(orderRepository.save(any(Order.class)))
 				.thenReturn(builtOrder);
@@ -76,91 +82,64 @@ class OrderServiceTest {
 			OrderDTO.OrderDTOBuilder dtoBuilder = OrderDTO.builder()
 				.client("11.542.936/0001-60");
 
-			Executable executable = () -> orderService.openOrder(dtoBuilder.build());
+			OrderDTO finalOrderDTO = dtoBuilder.build();
+			Executable executable = () -> orderService.openOrder(finalOrderDTO);
 			assertThrows(NoItemsInOrderException.class, executable);
 
-			OrderDTO orderDTO = dtoBuilder
-				.items(
-					List.of(
-						OrderItemDTO.builder()
-							.medicineCode("anything")
-							.quantity(1)
-							.build()
-					)
-				).build();
+			List<OrderItemDTO> orderItemDTOS = List.of(
+				OrderItemDTO.builder()
+					.medicineCode("anything")
+					.quantity(1)
+					.build()
+			);
+
+			OrderDTO orderDTO = dtoBuilder.items(orderItemDTOS).build();
 			Order order = orderService.openOrder(orderDTO);
 			assertEquals(1, order.getItems().size());
-			assertEquals(new BigDecimal(5), order.getTotal());
-		}
-	}
-
-	@Nested
-	@DisplayName(".addItemToOrder")
-	class AddItemToOrder {
-		Order order;
-		OrderItem item;
-
-		@BeforeEach
-		void setUp() {
-			order = Order.builder()
-					.state(OrderState.TO_CONFIRM)
-					.build();
-
-			item = OrderItem.builder()
-				.order(order)
-				.medicine(medicineActive)
-				.quantity(1)
-				.build();
-
-			Order builtOrder = Order.builder().build();
-			builtOrder.addItem(item);
-
-			when(orderRepository.save(order)).thenReturn(builtOrder);
-		}
-
-		@Test
-		@DisplayName("medicine has to be active")
-		void medicineHasToBeActive() {
-			Order orderWithItem = orderService.addItemToOrder(order, medicineActive, 1);
-			Executable throwsError = () -> orderService.addItemToOrder(order, medicineInactive, 2);
-			assertEquals(1, orderWithItem.getItems().size());
-			assertThrows(MedicineInactiveException.class, throwsError);
-		}
-
-		@Test
-		@DisplayName("Order has to be on confirmation stage")
-		void orderHasToBeOnConfirmationStage() {
-			Order orderConfirmed = Order.builder().state(OrderState.CONFIRMED).build();
-			Executable throwsError = () -> orderService.addItemToOrder(orderConfirmed, medicineActive, 3);
-			assertThrows(CannotAddItemsException.class, throwsError);
-			assertEquals(0, orderConfirmed.getItems().size());
+			assertEquals(new BigDecimal("5.00"), order.getTotal());
 		}
 	}
 
 	@Nested
 	@DisplayName(".confirmOrder")
 	class ConfirmOrder {
-		@Test
-		void willFail() {
-			fail();
-		}
-	}
+		Order confirmedOrder, toConfirmOrder;
 
-	@Nested
-	@DisplayName(".dispatchOrder")
-	class DispatchOrder {
-		@Test
-		void willFail() {
-			fail();
+		@BeforeEach
+		void setUp() {
+			confirmedOrder = Order.builder()
+				.state(OrderState.CONFIRMED)
+				.build();
+			toConfirmOrder = Order.builder()
+				.state(OrderState.TO_CONFIRM)
+				.build();
+			when(orderRepository.findById(2L))
+				.thenReturn(Optional.of(toConfirmOrder));
+			when(orderRepository.findById(1L))
+				.thenReturn(Optional.of(confirmedOrder));
 		}
-	}
 
-	@Nested
-	@DisplayName(".cancelOrder")
-	class CancelOrder {
 		@Test
-		void willFail() {
-			fail();
+		@DisplayName("id parameter should return a valid Order")
+		void idParameterShouldReturnValidOrder() {
+			when(orderRepository.findById(3L))
+				.thenReturn(Optional.empty());
+			Executable executable = () -> orderService.confirmOrder(3L);
+			assertThrows(NotFoundException.class, executable);
+		}
+
+		@Test
+		@DisplayName("cannot confirm already confirmed order")
+		void cannotConfirmAlreadyConfirmedOrder() {
+			Executable executable = () -> orderService.confirmOrder(1L);
+			assertThrows(CannotConfirmOrderException.class, executable);
+		}
+
+		@Test
+		@DisplayName("on confirm changes state to confirmed")
+		void onConfirmChangeState() {
+			Order order = orderService.confirmOrder(2L);
+			assertEquals(OrderState.CONFIRMED, order.getState());
 		}
 	}
 }

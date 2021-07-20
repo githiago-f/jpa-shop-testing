@@ -4,7 +4,11 @@ import com.medicines.vendor.domain.order.Order;
 import com.medicines.vendor.domain.order.dto.OrderDTO;
 import com.medicines.vendor.domain.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -17,7 +21,14 @@ public class OrderController {
 	}
 
 	@PostMapping
-	Order getOrders(@RequestBody OrderDTO orderDTO) {
+	@ResponseStatus(HttpStatus.CREATED)
+	Order getOrders(@RequestBody @Valid OrderDTO orderDTO, Errors errors) {
 		return orderService.openOrder(orderDTO);
+	}
+
+	@PatchMapping("/confirm/{id}")
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	void confirmOrder(@PathVariable("id") Long id) {
+		orderService.confirmOrder(id);
 	}
 }

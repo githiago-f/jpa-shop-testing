@@ -22,7 +22,7 @@ public class OrderItem {
 	@JsonBackReference
 	private Order order;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Medicine medicine;
 
 	@Transient
@@ -30,10 +30,5 @@ public class OrderItem {
 
 	public BigDecimal getTotalPrice() {
 		return unitPrice.multiply(new BigDecimal(quantity));
-	}
-
-	public void setMedicine(Medicine medicine) {
-		this.medicine = medicine;
-		this.unitPrice = medicine.getPrice();
 	}
 }
