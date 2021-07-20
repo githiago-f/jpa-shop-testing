@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Isn't waiting confirmation")
-public class CannotConfirmOrderException extends IllegalStateException {
+public class CannotConfirmOrderException extends RuntimeException {
 	@Override
 	public String getMessage() {
 		return "Cannot confirm order because isn't waiting confirmation";

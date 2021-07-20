@@ -29,7 +29,7 @@ public class UniqueConstraintValidator implements ConstraintValidator<Unique, Ob
 
 	@Override
 	public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
-		String jpql = "SELECT e.code FROM " + entity.getName() + " e WHERE e." + field + " = :value";
+		String jpql = "SELECT e FROM " + entity.getName() + " e WHERE e." + field + " = :value";
 		List<?> resultList = entityManager.createQuery(jpql)
 			.setParameter("value", value)
 			.getResultList();

@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class NoItemsInOrderException extends IllegalStateException {
+public class NoItemsInOrderException extends RuntimeException {
 	@Override
 	public String getMessage() {
 		return "Should have at last one item in order";

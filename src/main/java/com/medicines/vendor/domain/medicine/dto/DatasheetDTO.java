@@ -2,6 +2,7 @@ package com.medicines.vendor.domain.medicine.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.medicines.vendor.domain.medicine.Datasheet;
+import com.medicines.vendor.shared.validators.Unique;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,7 +21,9 @@ public class DatasheetDTO {
 	@JsonProperty("active_ingredient")
 	private String activeIngredient;
 
+	@NotEmpty
 	@JsonProperty("medicine_code")
+	@Unique(entity = Datasheet.class, field = "medicine.code")
 	private String medicineCode;
 
 	public Datasheet.DatasheetBuilder toEntity() {

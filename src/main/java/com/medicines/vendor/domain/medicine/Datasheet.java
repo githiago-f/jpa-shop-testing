@@ -14,6 +14,7 @@ public class Datasheet {
 
 	@JsonBackReference
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "medicine_code", unique = true)
 	private Medicine medicine;
 	private String indication;
 

@@ -43,5 +43,8 @@ public class Medicine {
 
 	public void enable() { state = MedicineState.ACTIVE; }
 	public boolean isWaitingDatasheet() { return state.equals(MedicineState.DATASHEET_REQUIRED); }
-	public boolean isActive() { return state.equals(MedicineState.ACTIVE); }
+	public boolean isActive() { return state.equals(MedicineState.ACTIVE);  }
+	public void setDatasheet(Datasheet datasheet) {
+		this.datasheet = datasheet;
+	}
 }

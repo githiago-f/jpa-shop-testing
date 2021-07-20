@@ -1,5 +1,6 @@
 package com.medicines.vendor.application.seeds;
 
+import com.medicines.vendor.domain.medicine.Datasheet;
 import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
 import com.medicines.vendor.domain.medicine.vo.MedicineState;
@@ -22,7 +23,7 @@ public class MedicinesSeed {
 	}
 
 	@Bean
-	CommandLineRunner medicineCLR(MedicinesRepository medicinesRepository) {
+	CommandLineRunner medicineSeed(MedicinesRepository medicinesRepository) {
 		return args -> {
 			Medicine medicine = medicineFactory("11571-0", "Medicine 1", "41.0");
 			Medicine medicine1 = medicineFactory("11571-1", "Medicine 2", "57.0");
@@ -31,6 +32,14 @@ public class MedicinesSeed {
 			Medicine medicine4 = medicineFactory("11571-4", "Medicine 5", "57.0");
 			Medicine medicine5 = medicineFactory("11571-5", "Medicine 6", "57.0");
 			Medicine medicine6 = medicineFactory("11571-6", "Medicine 7", "57.0");
+
+			Datasheet.DatasheetBuilder datasheet = Datasheet.builder()
+				.indication("Medicine indicated to blah")
+				.activeIngredient("sugar");
+
+			medicine.setDatasheet(datasheet.medicine(medicine).build());
+			medicine1.setDatasheet(datasheet.medicine(medicine1).build());
+
 			medicinesRepository.saveAll(
 				List.of(medicine, medicine1, medicine2, medicine3, medicine4, medicine5, medicine6)
 			);

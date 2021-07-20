@@ -12,24 +12,21 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/medicines/{code}/datasheet")
+@RequestMapping("/api/v1/datasheet")
 public class DatasheetController {
 	private final DatasheetService datasheetService;
 	private final MedicineService medicineService;
 
 	@Autowired
-	public DatasheetController(DatasheetService datasheetService,
-														 MedicineService medicineService) {
+	public DatasheetController(DatasheetService datasheetService, MedicineService medicineService) {
 		this.datasheetService = datasheetService;
 		this.medicineService = medicineService;
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Datasheet createDatasheet(@RequestBody @Valid DatasheetDTO datasheetDTO,
-																	 @PathVariable("code") String code) {
-		Medicine medicine = medicineService.getMedicineByCode(code);
-		datasheetDTO.setMedicineCode(code);
+	public Datasheet createDatasheet(@RequestBody @Valid DatasheetDTO datasheetDTO) {
+		Medicine medicine = medicineService.getMedicineByCode(datasheetDTO.getMedicineCode());
 		return datasheetService.createDatasheetForMedicine(datasheetDTO, medicine);
 	}
 }
