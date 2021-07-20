@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Repository
@@ -21,4 +22,7 @@ public interface MedicinesRepository extends JpaRepository<Medicine, String> {
 			"FROM Medicine m WHERE m.state = :medicineState",
 		countQuery = "SELECT count(m) FROM Medicine m WHERE m.state = :medicineState")
 	Page<MedicineListable> findAllListable(MedicineState medicineState, Pageable pageable);
+
+	@Query("SELECT m.price FROM Medicine m WHERE m.code = ?1 AND m.state = 'ACTIVE'")
+	Optional<BigDecimal> findActiveMedicinePriceByCode(String code);
 }

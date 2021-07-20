@@ -1,16 +1,16 @@
 package com.medicines.vendor.domain.order;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.medicines.vendor.domain.medicine.Medicine;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Data
+@Data @Builder
 @NoArgsConstructor
-@Entity
-@Table(name = "order_items")
+@AllArgsConstructor
+@Entity @Table(name = "order_items")
 public class OrderItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -19,16 +19,14 @@ public class OrderItem {
 	private BigDecimal unitPrice;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonBackReference
 	private Order order;
-	@ManyToOne(fetch = FetchType.LAZY)
+
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Medicine medicine;
 
-	public OrderItem(Integer quantity, Order order, Medicine medicine) {
-		this.quantity = quantity;
-		this.order = order;
-		this.medicine = medicine;
-		this.unitPrice = medicine.getPrice();
-	}
+	@Transient
+	private BigDecimal totalPrice;
 
 	public BigDecimal getTotalPrice() {
 		return unitPrice.multiply(new BigDecimal(quantity));
