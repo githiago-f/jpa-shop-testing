@@ -38,7 +38,9 @@ public class MedicinesSeed {
 				.activeIngredient("sugar");
 
 			medicine.setDatasheet(datasheet.medicine(medicine).build());
+			medicine.enable();
 			medicine1.setDatasheet(datasheet.medicine(medicine1).build());
+			medicine1.enable();
 
 			medicinesRepository.saveAll(
 				List.of(medicine, medicine1, medicine2, medicine3, medicine4, medicine5, medicine6)

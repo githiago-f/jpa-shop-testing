@@ -34,9 +34,8 @@ public class UniqueConstraintValidator implements ConstraintValidator<Unique, Ob
 			.setParameter("value", value)
 			.getResultList();
 		if(resultList.size() >= 1) {
-			throw new ResourceAlreadyExistsException(
-				entityName + " with " + field + " = " + value + " already exists"
-			);
+			String message = String.format("%s with %s equal to %s already exists.", entityName, field, value);
+			throw new ResourceAlreadyExistsException(message);
 		}
 		return true;
 	}
