@@ -1,4 +1,4 @@
-package com.medicines.vendor.domain.medicine.resource_mappers;
+package com.medicines.vendor.application.hateoas.medicine;
 
 import com.medicines.vendor.application.controller.medicine.MedicineController;
 import com.medicines.vendor.domain.medicine.dto.MedicineListable;

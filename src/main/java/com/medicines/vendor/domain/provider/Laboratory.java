@@ -21,5 +21,5 @@ public class Laboratory {
 	private String name;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Employee> employees;
+	private List<User> employees;
 }
