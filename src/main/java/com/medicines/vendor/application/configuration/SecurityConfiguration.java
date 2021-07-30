@@ -1,9 +1,10 @@
 package com.medicines.vendor.application.configuration;
 
+import static com.medicines.vendor.application.security.ApplicationPermission.*;
 import static com.medicines.vendor.application.security.ApplicationRole.*;
-import static com.medicines.vendor.application.security.SecurityURLPatterns.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,13 +30,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http
 			.csrf().disable()
 			.authorizeRequests()
-				.antMatchers(all).permitAll()
-				.antMatchers(labOnly).hasRole(ADMIN.name())
-				.antMatchers(consumerOnly).hasRole(CONSUMER.name())
-			.anyRequest().authenticated()
-			.and().httpBasic();
+			.antMatchers("/", "index", "css/*", "js/*").permitAll()
+			.antMatchers("/api/v*/providers/*/medicines")
+				.hasAuthority(WRITE_MEDICINE.name())
+			.antMatchers("/api/v*/providers/**")
+				.hasRole(ADMIN.name())
+			.anyRequest()
+			.authenticated()
+			.and()
+			.httpBasic();
 	}
 
+	@Bean
 	@Override
 	protected UserDetailsService userDetailsService() {
 		UserDetails thiago = User.builder()
@@ -54,9 +60,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			thiago,
 			manuel
 		);
-	}
-
-	public PasswordEncoder getPasswordEncoder() {
-		return passwordEncoder;
 	}
 }

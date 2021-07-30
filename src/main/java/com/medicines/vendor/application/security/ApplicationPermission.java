@@ -3,7 +3,7 @@ package com.medicines.vendor.application.security;
 import lombok.Getter;
 
 @Getter
-public enum ApplicationPermissions {
+public enum ApplicationPermission {
 	READ_MEDICINE("medicine:read"),
 	WRITE_MEDICINE("medicine:write"),
 	OPEN_ORDER("order:open"),
@@ -11,7 +11,7 @@ public enum ApplicationPermissions {
 
 	private final String permission;
 
-	ApplicationPermissions(String permission) {
+	ApplicationPermission(String permission) {
 		this.permission = permission;
 	}
 }
