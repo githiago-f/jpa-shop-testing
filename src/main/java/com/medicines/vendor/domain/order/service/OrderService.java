@@ -7,7 +7,7 @@ import com.medicines.vendor.domain.order.dto.OrderDTO;
 import com.medicines.vendor.domain.order.dto.OrderItemDTO;
 import com.medicines.vendor.domain.order.repository.OrderRepository;
 import com.medicines.vendor.domain.order.service.errors.NoItemsInOrderException;
-import com.medicines.vendor.shared.errors.NotFoundException;
+import com.medicines.vendor.domain.shared.errors.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

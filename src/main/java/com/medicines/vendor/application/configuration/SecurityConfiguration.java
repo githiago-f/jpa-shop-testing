@@ -1,28 +1,28 @@
 package com.medicines.vendor.application.configuration;
 
-import static com.medicines.vendor.application.security.ApplicationPermission.*;
-import static com.medicines.vendor.application.security.ApplicationRole.*;
-
+import com.medicines.vendor.domain.users.repository.UserRepository;
+import com.medicines.vendor.domain.users.service.ImplUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import static com.medicines.vendor.application.security.ApplicationRole.LAB_ADMIN;
+import static com.medicines.vendor.application.security.ApplicationRole.TECHNICAL;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-	private final PasswordEncoder passwordEncoder;
+	private final UserRepository userRepository;
 
 	@Autowired
-	public SecurityConfiguration(PasswordEncoder passwordEncoder) {
-		this.passwordEncoder = passwordEncoder;
+	public SecurityConfiguration(UserRepository userRepository) {
+		this.userRepository = userRepository;
 	}
 
 	@Override
@@ -30,11 +30,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http
 			.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/", "index", "css/*", "js/*").permitAll()
-			.antMatchers("/api/v*/providers/*/medicines")
-				.hasAuthority(WRITE_MEDICINE.name())
-			.antMatchers("/api/v*/providers/**")
-				.hasRole(ADMIN.name())
+			.antMatchers(HttpMethod.GET, "/api/v*/medicines/**").permitAll()
+			.antMatchers("/api/v*/laboratory/**")
+				.hasAnyRole(LAB_ADMIN.name(), TECHNICAL.name())
 			.anyRequest()
 			.authenticated()
 			.and()
@@ -44,21 +42,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Bean
 	@Override
 	protected UserDetailsService userDetailsService() {
-		UserDetails thiago = User.builder()
-			.username("thiago")
-			.password(passwordEncoder.encode("pass123"))
-			.roles(CONSUMER.name())
-			.build();
-
-		UserDetails manuel = User.builder()
-			.username("manuel")
-			.password(passwordEncoder.encode("pass123"))
-			.roles(ADMIN.name())
-			.build();
-
-		return new InMemoryUserDetailsManager(
-			thiago,
-			manuel
-		);
+		return new ImplUserDetailsService(userRepository);
 	}
 }

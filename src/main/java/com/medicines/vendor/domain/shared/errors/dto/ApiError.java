@@ -1,4 +1,4 @@
-package com.medicines.vendor.shared.errors.dto;
+package com.medicines.vendor.domain.shared.errors.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

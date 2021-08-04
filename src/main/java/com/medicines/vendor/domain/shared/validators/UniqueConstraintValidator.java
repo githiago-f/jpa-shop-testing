@@ -1,6 +1,6 @@
-package com.medicines.vendor.shared.validators;
+package com.medicines.vendor.domain.shared.validators;
 
-import com.medicines.vendor.shared.errors.ResourceAlreadyExistsException;
+import com.medicines.vendor.domain.shared.errors.ResourceAlreadyExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;

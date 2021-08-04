@@ -1,29 +1,38 @@
 package com.medicines.vendor.application.security;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.Collection;
 
 @Getter
-@Embeddable
 @NoArgsConstructor
-@AllArgsConstructor
-public class AccessDetails implements UserDetails {
-	@Column(unique = true)
-	private String email;
+@Entity @Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+public class ApplicationUserDetails implements UserDetails {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@Email
+	@Column(name = "username", unique = true)
+	private String username;
 	private String password;
 	private ApplicationRole role;
 
+	public ApplicationUserDetails(String username, String password, ApplicationRole role) {
+		this.username = username;
+		this.password = password;
+		this.role = role;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return role.getGrantedAuthorities();
 	}
 
 	@Override
@@ -33,7 +42,7 @@ public class AccessDetails implements UserDetails {
 
 	@Override
 	public String getUsername() {
-		return email;
+		return username;
 	}
 
 	@Override

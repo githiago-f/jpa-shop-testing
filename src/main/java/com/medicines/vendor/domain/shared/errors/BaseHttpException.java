@@ -1,4 +1,4 @@
-package com.medicines.vendor.shared.errors;
+package com.medicines.vendor.domain.shared.errors;
 
 import org.springframework.http.HttpStatus;
 

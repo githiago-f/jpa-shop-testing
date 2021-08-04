@@ -1,8 +1,9 @@
 package com.medicines.vendor.domain.medicine.dto;
 
+import com.medicines.vendor.domain.laboratory.Laboratory;
 import com.medicines.vendor.domain.medicine.Medicine;
 import com.medicines.vendor.domain.medicine.vo.MedicineState;
-import com.medicines.vendor.shared.validators.Unique;
+import com.medicines.vendor.domain.shared.validators.Unique;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,12 +30,13 @@ public class MedicineDTO {
 	@NumberFormat(style = NumberFormat.Style.CURRENCY)
 	private final BigDecimal price;
 
-	public Medicine toCreateEntity() {
+	public Medicine toCreateEntity(Laboratory laboratory) {
 		return Medicine.builder()
 			.code(code)
 			.state(MedicineState.DATASHEET_REQUIRED)
 			.name(name)
 			.price(price)
+			.laboratory(laboratory)
 			.build();
 	}
 }

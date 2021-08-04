@@ -10,8 +10,16 @@ import static com.medicines.vendor.application.security.ApplicationPermission.*;
 
 @Getter
 public enum ApplicationRole {
-	ADMIN(READ_MEDICINE, WRITE_MEDICINE),
-	CONSUMER(READ_MEDICINE);
+	LAB_ADMIN(
+		WRITE_DATASHEET,
+		READ_MEDICINE,
+		WRITE_MEDICINE,
+		READ_ALL_MEDICINE,
+		READ_ORDER
+	),
+	TECHNICAL(WRITE_DATASHEET, READ_MEDICINE),
+	VENDOR_ADMIN(READ_MEDICINE, READ_DATASHEET, READ_ORDER, ORDER_DRUG),
+	CONSUMER(READ_MEDICINE, READ_DATASHEET);
 
 	private final Set<ApplicationPermission> permissions;
 
