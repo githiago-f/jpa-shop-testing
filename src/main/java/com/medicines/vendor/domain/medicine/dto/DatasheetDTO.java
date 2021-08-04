@@ -2,7 +2,7 @@ package com.medicines.vendor.domain.medicine.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.medicines.vendor.domain.medicine.Datasheet;
-import com.medicines.vendor.shared.validators.Unique;
+import com.medicines.vendor.domain.shared.validators.Unique;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

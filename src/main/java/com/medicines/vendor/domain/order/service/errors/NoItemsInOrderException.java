@@ -1,6 +1,6 @@
 package com.medicines.vendor.domain.order.service.errors;
 
-import com.medicines.vendor.shared.errors.BaseHttpException;
+import com.medicines.vendor.domain.shared.errors.BaseHttpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
