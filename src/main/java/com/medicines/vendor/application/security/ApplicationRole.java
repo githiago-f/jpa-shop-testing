@@ -3,6 +3,7 @@ package com.medicines.vendor.application.security;
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public enum ApplicationRole {
 	private final Set<ApplicationPermission> permissions;
 
 	ApplicationRole(ApplicationPermission...permissions) {
-		this.permissions = Set.of(permissions);
+		this.permissions = new HashSet<>(Arrays.asList(permissions));
 	}
 
 	public Set<SimpleGrantedAuthority> getGrantedAuthorities() {

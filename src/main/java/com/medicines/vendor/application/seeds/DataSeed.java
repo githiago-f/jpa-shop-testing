@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.medicines.vendor.application.security.ApplicationRole.LAB_ADMIN;
@@ -71,9 +72,11 @@ public class DataSeed {
 			medicine1.setDatasheet(datasheet.medicine(medicine1).build());
 			medicine1.enable();
 
-			medicinesRepository.saveAll(
-				List.of(medicine, medicine1, medicine2, medicine3, medicine4, medicine5, medicine6)
+			List<Medicine> medicines = new ArrayList<>(
+				Arrays.asList(medicine, medicine1, medicine2, medicine3, medicine4, medicine5, medicine6)
 			);
+
+			medicinesRepository.saveAll(medicines);
 		};
 	}
 
