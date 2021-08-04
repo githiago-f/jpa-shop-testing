@@ -19,6 +19,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,7 +85,8 @@ class OrderServiceTest {
 			Executable executable = () -> orderService.openOrder(finalOrderDTO);
 			assertThrows(NoItemsInOrderException.class, executable);
 
-			List<OrderItemDTO> orderItemDTOS = List.of(
+			List<OrderItemDTO> orderItemDTOS = new ArrayList<>();
+			orderItemDTOS.add(
 				OrderItemDTO.builder()
 					.medicineCode("anything")
 					.quantity(1)
