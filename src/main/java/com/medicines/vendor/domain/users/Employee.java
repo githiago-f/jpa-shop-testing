@@ -1,40 +1,49 @@
 package com.medicines.vendor.domain.users;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.medicines.vendor.application.security.ApplicationUserDetails;
 import com.medicines.vendor.domain.laboratory.Laboratory;
 import com.medicines.vendor.domain.users.vo.EmployeeData;
+import com.medicines.vendor.domain.users.vo.UserCpfMask;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @Entity
 public class Employee extends ApplicationUserDetails {
-	private String fullName;
 	@CPF
 	@Column(unique = true)
 	private String cpf;
 
-	@JsonBackReference
+	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Laboratory laboratory;
-	private String hirer;
+	private UUID hirer;
 
 	public Employee(EmployeeData employeeData, Laboratory laboratory) {
-		super(employeeData.getUsername(), employeeData.getPassword(), employeeData.getRole());
-		this.fullName = employeeData.getFullName();
+		super(
+			employeeData.getUsername(),
+			employeeData.getPassword(),
+			employeeData.getRole(),
+			employeeData.getFullName(),
+			employeeData.getCpf()
+		);
 		this.laboratory = laboratory;
-		this.cpf = employeeData.getCpf();
-		this.hirer = laboratory.getCnpj();
+		this.hirer = laboratory.getId();
 	}
 
 	public String getUsername() {
 		return super.getUsername();
+	}
+
+	public String getCpf() {
+		return UserCpfMask.applyMask(cpf);
 	}
 }

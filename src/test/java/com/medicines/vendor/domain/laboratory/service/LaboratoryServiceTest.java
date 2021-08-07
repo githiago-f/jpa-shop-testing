@@ -10,13 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @DisplayName("Laboratory service test")
 class LaboratoryServiceTest {
-	Long exampleId = 1L;
+	UUID exampleId = UUID.randomUUID();
 	Laboratory laboratory;
 
 	@Mock LaboratoryRepository laboratoryRepository;

@@ -1,13 +1,14 @@
 package com.medicines.vendor.domain.medicine.services;
 
 import com.medicines.vendor.domain.medicine.Medicine;
-import com.medicines.vendor.domain.medicine.dto.MedicineListable;
+import com.medicines.vendor.domain.medicine.dto.MedicineModel;
 import com.medicines.vendor.domain.medicine.repository.MedicinesRepository;
 import com.medicines.vendor.domain.medicine.vo.MedicineState;
 import com.medicines.vendor.domain.shared.errors.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +24,7 @@ public class MedicineService {
 		return repository.save(medicine);
 	}
 
-	public Page<MedicineListable> getAllActiveMedicines(Pageable pageable) {
+	public Page<MedicineModel> getAllActiveMedicines(Pageable pageable) {
 		return repository.findAllActiveListableMedicines(MedicineState.ACTIVE, pageable);
 	}
 
@@ -32,7 +33,7 @@ public class MedicineService {
 			.orElseThrow(() -> new NotFoundException("Could not find"));
 	}
 
-	public Page<MedicineListable> getAllMedicines(Pageable pageable) {
-		return repository.findAllListableMedicines(pageable);
+	public Page<MedicineModel> getAllMedicines(Specification<Medicine> specification, Pageable pageable) {
+		return repository.findAllListableMedicines(specification, pageable);
 	}
 }
